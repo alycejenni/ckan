@@ -7,6 +7,64 @@
 Changelog
 ---------
 
+v.2.9.0 TBA
+==================
+
+Minor changes:
+
+ * For navl schemas, the 'default' validator no longer applies the default when
+   the value is False, 0, [] or {} (#4448)
+
+Bugfixes:
+
+ * Action function "datastore_search" would calculate the total, even if you
+   set include_total=False (#4448)
+
+Deprecations:
+ * ``c.action`` and ``c.controller`` variables should be avoided.
+   ``ckan.plugins.toolkit.get_endpoint`` can be used instead. This function
+   returns tuple of two items(depending on request handler):
+   1. Flask blueprint name / Pylons controller name
+   2. Flask view name / Pylons action name
+   In some cases, Flask blueprints have names that are differs from their
+   Pylons equivalents. For example, 'package' controller is divided between
+   'dataset' and 'resource' blueprints. For such cases you may need to perform
+   additional check of returned value:
+
+   >>> if toolkit.get_endpoint()[0] in ['dataset', 'package']:
+   >>>     do_something()
+
+   In this code snippet, will be called if current request is handled via Flask's
+   dataset blueprint in CKAN>=2.9, and, in the same time, it's still working for
+   Pylons package controller in CKAN<2.9
+
+
+v.2.8.1 2018-07-25
+==================
+
+General notes:
+ * Note: This version does not requires a requirements upgrade on source installations
+ * Note: This version does not requires a database upgrade
+ * Note: This version does not require a Solr schema upgrade
+
+Fixes:
+
+ * "Add Filter" Performance Issue (`#4162 <https://github.com/ckan/ckan/issues/4162>`_)
+ * Error handler update (`#4257 <https://github.com/ckan/ckan/issues/4257>`_)
+ * "New view" button does not work (`#4260 <https://github.com/ckan/ckan/issues/4260>`_)
+ * Upload logo is not working (`#4262 <https://github.com/ckan/ckan/issues/4262>`_)
+ * Unable to pip install ckan (`#4271 <https://github.com/ckan/ckan/issues/4271>`_)
+ * The "License" Icon in 2.8 is wrong (`#4272 <https://github.com/ckan/ckan/issues/4272>`_)
+ * Search - input- border color is overly specific in CSS (`#4273 <https://github.com/ckan/ckan/issues/4273>`_)
+ * Site logo image does not scale down when very large (`#4283 <https://github.com/ckan/ckan/issues/4283>`_)
+ * Validation Error on datastore_search when sorting timestamp fields (`#4288 <https://github.com/ckan/ckan/issues/4288>`_)
+ * Undocumented changes breaking error_document_template (`#4303 <https://github.com/ckan/ckan/issues/4303>`_)
+ * Internal server error when viewing /dashboard when logged out (`#4305 <https://github.com/ckan/ckan/issues/4305>`_)
+ * Missing c.action attribute in 2.8.0 templates (`#4310 <https://github.com/ckan/ckan/issues/4310>`_)
+ * [multilingual] AttributeError: '_Globals' object has no attribute 'fields' (`#4338 <https://github.com/ckan/ckan/issues/4338>`_)
+ * `search` legacy route missing (`#4346 <https://github.com/ckan/ckan/issues/4346>`_)
+
+
 v.2.8.0 2018-05-09
 ==================
 
@@ -29,7 +87,7 @@ General notes:
    this version. Check the *Deprecations* section to be prepared.
 
 Major changes:
- * New revamped frontend templates based on Bootstrap 3, see "Changes and deprecations" (#3547) 
+ * New revamped frontend templates based on Bootstrap 3, see "Changes and deprecations" (#3547)
  * Allow datastore_search_sql on private datasets (#2562)
  * New Flask blueprints migrated from old Pylons controllers: user, dashboard, feeds, admin and home (#3927, #3870, #3775, #3762)
  * Improved support for custom groups and organization types (#4032)
@@ -124,7 +182,17 @@ Changes and deprecations:
  * The old Celery based background jobs have been removed in CKAN 2.8 in favour of the new RQ based
    jobs (http://docs.ckan.org/en/latest/maintaining/background-tasks.html). Extensions can still
    of course use Celery but they will need to handle the management themselves.
+ * After introducing dataset blueprint, `h.get_facet_items_dict` takes search_facets as second argument.
+   This change is aimed to reduce usage of global variables in context. For a while, it has default value
+   of None, in which case, `c.search_facets` will be used. But all template designers are strongly advised
+   to specify this argument explicitly, as in future it'll become required.
  * The ``ckan.recaptcha.version`` config option is now removed, since v2 is the only valid version now (#4061)
+
+v2.7.4 2018-05-09
+=================
+
+ * Adding filter at resoruce preview doesn't work while site is setup with ckan.root_path param (#4140)
+ * Datastore dump results are not the same as data in database (#4150)
 
 v2.7.3 2018-03-15
 =================
@@ -303,6 +371,13 @@ Deprecations:
    jobs (http://docs.ckan.org/en/latest/maintaining/background-tasks.html). Extensions can still
    of course use Celery but they will need to handle the management themselves.
 
+v2.6.6 2018-05-09
+=================
+
+* Adding filter at resoruce preview doesn't work while site is setup with ckan.root_path param (#4140)
+* Stable version URLs CKAN for documentation (#4209)
+* Add Warning in docs sidebar (#4209)
+
 v2.6.5 2018-03-15
 =================
 
@@ -473,6 +548,13 @@ Bug fixes:
 
 API changes and deprecations:
  * Replace `c.__version__` with new helper `h.ckan_version()` (`#3103 <https://github.com/ckan/ckan/pull/3103>`_)
+
+v2.5.9 2018-05-09
+=================
+
+* Adding filter at resoruce preview doesn't work while site is setup with ckan.root_path param (#4140)
+* Add Warning in docs sidebar (#4209)
+* Point API docs to stable URL (#4209)
 
 v2.5.8 2018-03-15
 =================
